@@ -1,0 +1,76 @@
+{{- if .Values.nodejsExpress.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "hello-helm.nodejs-express.fullname" . }}
+  labels:
+    {{- include "hello-helm.nodejs-express.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.nodejsExpress.replicas }}
+  selector:
+    matchLabels:
+      {{- include "hello-helm.nodejs-express.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        {{- with .Values.common.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      labels:
+        {{- include "hello-helm.nodejs-express.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- if .Values.common.serviceAccount.create }}
+      serviceAccountName: {{ include "hello-helm.serviceAccountName" . }}
+      {{- end }}
+      securityContext:
+        {{- toYaml .Values.global.securityContext | nindent 8 }}
+      containers:
+      - name: nodejs-express
+        securityContext:
+          allowPrivilegeEscalation: false
+          runAsUser: 0
+          runAsNonRoot: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: false
+        image: {{ include "hello-helm.image" (dict "Values" .Values "name" .Values.nodejsExpress.image.name) }}
+        imagePullPolicy: {{ .Values.global.imagePullPolicy }}
+        ports:
+        - name: http
+          containerPort: {{ .Values.nodejsExpress.image.targetPort }}
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: {{ .Values.nodejsExpress.healthCheck.path }}
+            port: {{ .Values.nodejsExpress.healthCheck.port }}
+          initialDelaySeconds: {{ .Values.nodejsExpress.healthCheck.initialDelaySeconds }}
+          periodSeconds: {{ .Values.nodejsExpress.healthCheck.periodSeconds }}
+          timeoutSeconds: {{ .Values.nodejsExpress.healthCheck.timeoutSeconds }}
+        readinessProbe:
+          httpGet:
+            path: {{ .Values.nodejsExpress.healthCheck.path }}
+            port: {{ .Values.nodejsExpress.healthCheck.port }}
+          initialDelaySeconds: {{ .Values.nodejsExpress.healthCheck.initialDelaySeconds }}
+          periodSeconds: {{ .Values.nodejsExpress.healthCheck.periodSeconds }}
+          timeoutSeconds: {{ .Values.nodejsExpress.healthCheck.timeoutSeconds }}
+        resources:
+          {{- toYaml .Values.nodejsExpress.resources | nindent 12 }}
+        env:
+        - name: PORT
+          value: {{ .Values.nodejsExpress.image.targetPort | quote }}
+        - name: NODE_ENV
+          value: "production"
+      {{- with .Values.common.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.common.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.common.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}

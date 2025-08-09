@@ -1,0 +1,17 @@
+{{- if .Values.phpLaravel.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "hello-helm.php-laravel.fullname" . }}
+  labels:
+    {{- include "hello-helm.php-laravel.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.phpLaravel.service.type }}
+  ports:
+  - port: {{ .Values.phpLaravel.service.port }}
+    targetPort: {{ .Values.phpLaravel.image.targetPort }}
+    protocol: TCP
+    name: http
+  selector:
+    {{- include "hello-helm.php-laravel.selectorLabels" . | nindent 4 }}
+{{- end }}

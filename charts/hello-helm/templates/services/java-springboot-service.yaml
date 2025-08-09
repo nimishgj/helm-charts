@@ -1,0 +1,17 @@
+{{- if .Values.javaSpringboot.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "hello-helm.java-springboot.fullname" . }}
+  labels:
+    {{- include "hello-helm.java-springboot.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.javaSpringboot.service.type }}
+  ports:
+  - port: {{ .Values.javaSpringboot.service.port }}
+    targetPort: {{ .Values.javaSpringboot.image.targetPort }}
+    protocol: TCP
+    name: http
+  selector:
+    {{- include "hello-helm.java-springboot.selectorLabels" . | nindent 4 }}
+{{- end }}

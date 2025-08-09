@@ -1,0 +1,17 @@
+{{- if .Values.nodejsExpress.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "hello-helm.nodejs-express.fullname" . }}
+  labels:
+    {{- include "hello-helm.nodejs-express.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.nodejsExpress.service.type }}
+  ports:
+  - port: {{ .Values.nodejsExpress.service.port }}
+    targetPort: {{ .Values.nodejsExpress.image.targetPort }}
+    protocol: TCP
+    name: http
+  selector:
+    {{- include "hello-helm.nodejs-express.selectorLabels" . | nindent 4 }}
+{{- end }}

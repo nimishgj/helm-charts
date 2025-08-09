@@ -1,7 +1,8 @@
 # Helm
 *.tgz
-charts/
 Chart.lock
+# Ignore helm dependency charts (but not our source charts)
+*/charts/
 
 # Temporary files
 *.tmp
