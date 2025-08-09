@@ -3,6 +3,38 @@ entries:
   hello-helm:
   - apiVersion: v2
     appVersion: 1.0.0
+    created: "2025-08-09T08:15:59.415862013Z"
+    description: A Helm chart for deploying multi-framework REST API applications
+      (Go/Gin, Java/SpringBoot, Node.js/Express, Python/FastAPI, PHP/Laravel)
+    digest: 88222dd84c97c481af0dfa30d8652dce69a7e1a5115c740edbe7d0c9f8204fd0
+    home: https://github.com/nimishgj/sample-applications
+    keywords:
+    - api
+    - rest
+    - microservices
+    - go
+    - java
+    - nodejs
+    - python
+    - php
+    - gin
+    - springboot
+    - express
+    - fastapi
+    - laravel
+    kubeVersion: '>=1.19.0-0'
+    maintainers:
+    - email: nimish@example.com
+      name: nimishgj
+    name: hello-helm
+    sources:
+    - https://github.com/nimishgj/sample-applications
+    type: application
+    urls:
+    - https://github.com/nimishgj/helm-charts/releases/download/hello-helm-0.1.2/hello-helm-0.1.2.tgz
+    version: 0.1.2
+  - apiVersion: v2
+    appVersion: 1.0.0
     created: "2025-08-09T08:11:17.367923898Z"
     description: A Helm chart for deploying multi-framework REST API applications
       (Go/Gin, Java/SpringBoot, Node.js/Express, Python/FastAPI, PHP/Laravel)
@@ -33,4 +65,4 @@ entries:
     urls:
     - https://github.com/nimishgj/helm-charts/releases/download/hello-helm-0.1.1/hello-helm-0.1.1.tgz
     version: 0.1.1
-generated: "2025-08-09T08:11:17.367934798Z"
+generated: "2025-08-09T08:15:59.41587008Z"
