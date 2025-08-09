@@ -19,12 +19,12 @@ global:
 
 # Framework-specific configurations
 goGin:
-  enabled: true
+  enabled: false
   image:
     name: hello-gin
     port: 8080
     targetPort: 8080
-  replicas: 2
+  replicas: 1
   resources:
     requests:
       memory: "64Mi"
@@ -43,12 +43,12 @@ goGin:
     port: 80
 
 javaSpringboot:
-  enabled: true
+  enabled: false
   image:
     name: hello-springboot
     port: 8080
     targetPort: 8080
-  replicas: 2
+  replicas: 1
   resources:
     requests:
       memory: "256Mi"
@@ -67,12 +67,12 @@ javaSpringboot:
     port: 80
 
 nodejsExpress:
-  enabled: true
+  enabled: false
   image:
     name: hello-express
     port: 8080
     targetPort: 8080
-  replicas: 2
+  replicas: 1
   resources:
     requests:
       memory: "64Mi"
@@ -91,12 +91,12 @@ nodejsExpress:
     port: 80
 
 pythonFastapi:
-  enabled: true
+  enabled: false
   image:
     name: hello-fastapi
     port: 8080
     targetPort: 8080
-  replicas: 2
+  replicas: 1
   resources:
     requests:
       memory: "64Mi"
@@ -115,12 +115,12 @@ pythonFastapi:
     port: 80
 
 phpLaravel:
-  enabled: true
+  enabled: false
   image:
     name: hello-laravel
     port: 80
     targetPort: 80
-  replicas: 2
+  replicas: 1
   resources:
     requests:
       memory: "128Mi"
