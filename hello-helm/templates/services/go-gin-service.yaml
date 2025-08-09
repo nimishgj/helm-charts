@@ -1,0 +1,17 @@
+{{- if .Values.goGin.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "hello-helm.go-gin.fullname" . }}
+  labels:
+    {{- include "hello-helm.go-gin.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.goGin.service.type }}
+  ports:
+  - port: {{ .Values.goGin.service.port }}
+    targetPort: {{ .Values.goGin.image.targetPort }}
+    protocol: TCP
+    name: http
+  selector:
+    {{- include "hello-helm.go-gin.selectorLabels" . | nindent 4 }}
+{{- end }}
