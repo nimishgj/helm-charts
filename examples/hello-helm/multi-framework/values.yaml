@@ -1,0 +1,60 @@
+# Multi-framework example - Deploy multiple frameworks simultaneously
+# Demonstrates how to enable and configure multiple frameworks
+
+global:
+  imageRegistry: ghcr.io
+  imageRepository: nimishgj
+  imageTag: latest
+  imagePullPolicy: IfNotPresent
+
+# Enable Go/Gin with minimal resources
+goGin:
+  enabled: true
+  replicas: 2
+  resources:
+    requests:
+      memory: "64Mi"
+      cpu: "50m"
+    limits:
+      memory: "128Mi"
+      cpu: "100m"
+
+# Enable Java/SpringBoot with higher resources
+javaSpringboot:
+  enabled: true
+  replicas: 1
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "100m"
+    limits:
+      memory: "512Mi"
+      cpu: "200m"
+
+# Enable Node.js/Express
+nodejsExpress:
+  enabled: true
+  replicas: 2
+  resources:
+    requests:
+      memory: "64Mi"
+      cpu: "50m"
+    limits:
+      memory: "128Mi"
+      cpu: "100m"
+
+# Enable Python/FastAPI
+pythonFastapi:
+  enabled: true
+  replicas: 2
+  resources:
+    requests:
+      memory: "64Mi"
+      cpu: "50m"
+    limits:
+      memory: "128Mi"
+      cpu: "100m"
+
+# Disable PHP/Laravel to reduce resource usage
+phpLaravel:
+  enabled: false

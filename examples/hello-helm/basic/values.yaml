@@ -1,0 +1,33 @@
+# Basic example - Single framework deployment (Go/Gin)
+# This is the simplest deployment with minimal configuration
+
+global:
+  imageRegistry: ghcr.io
+  imageRepository: nimishgj
+  imageTag: latest
+  imagePullPolicy: IfNotPresent
+
+# Enable only Go/Gin for basic setup
+goGin:
+  enabled: true
+  replicas: 1
+  resources:
+    requests:
+      memory: "64Mi"
+      cpu: "50m"
+    limits:
+      memory: "128Mi"
+      cpu: "100m"
+
+# Disable other frameworks
+javaSpringboot:
+  enabled: false
+
+nodejsExpress:
+  enabled: false
+
+pythonFastapi:
+  enabled: false
+
+phpLaravel:
+  enabled: false

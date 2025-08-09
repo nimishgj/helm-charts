@@ -1,0 +1,81 @@
+# Production example - Production-ready configuration
+# Includes higher resource limits, multiple replicas, and production settings
+
+global:
+  imageRegistry: ghcr.io
+  imageRepository: nimishgj
+  imageTag: v1.0.0  # Use specific version tag in production
+  imagePullPolicy: Always
+  
+  # Production security context
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 1000
+    fsGroup: 2000
+
+# Production Go/Gin configuration
+goGin:
+  enabled: true
+  replicas: 3
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "100m"
+    limits:
+      memory: "256Mi"
+      cpu: "200m"
+  healthCheck:
+    path: /api/health
+    port: 8080
+    initialDelaySeconds: 15
+    periodSeconds: 10
+    timeoutSeconds: 5
+
+# Production Java/SpringBoot configuration
+javaSpringboot:
+  enabled: true
+  replicas: 2
+  resources:
+    requests:
+      memory: "512Mi"
+      cpu: "200m"
+    limits:
+      memory: "1Gi"
+      cpu: "500m"
+  healthCheck:
+    path: /api/health
+    port: 8080
+    initialDelaySeconds: 60
+    periodSeconds: 30
+    timeoutSeconds: 10
+
+# Disable other frameworks for focused deployment
+nodejsExpress:
+  enabled: false
+
+pythonFastapi:
+  enabled: false
+
+phpLaravel:
+  enabled: false
+
+# Production common settings
+common:
+  podAnnotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "8080"
+    prometheus.io/path: "/metrics"
+  
+  # Node affinity for production workloads
+  affinity:
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+            - key: app.kubernetes.io/name
+              operator: In
+              values:
+              - hello-helm
+          topologyKey: kubernetes.io/hostname
