@@ -138,6 +138,55 @@ phpLaravel:
     type: ClusterIP
     port: 80
 
+# Load generator configuration
+loadGenerator:
+  enabled: false
+  image:
+    repository: curlimages/curl
+    tag: latest
+    pullPolicy: IfNotPresent
+  replicas: 1
+  
+  # Load generation configuration
+  config:
+    # Duration to run the load test (0 means run indefinitely)
+    duration: "300s"
+    # Requests per second per target
+    rps: 10
+    # Concurrent connections per target
+    concurrency: 5
+    # Endpoints to target (will target all enabled frameworks)
+    endpoints:
+      - "/api/health"
+      - "/api/users"
+    # HTTP method for requests
+    method: "GET"
+    # Request timeout
+    timeout: "30s"
+    # Delay between batches of requests
+    delay: "1s"
+  
+  # Target frameworks (auto-detected from enabled frameworks if empty)
+  targets: []
+  
+  # Resource configuration
+  resources:
+    requests:
+      memory: "32Mi"
+      cpu: "25m"
+    limits:
+      memory: "64Mi"
+      cpu: "50m"
+  
+  # Pod configuration
+  podAnnotations: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  
+  # Restart policy
+  restartPolicy: Always
+
 # Common configuration that can be overridden per framework
 common:
   # Pod annotations

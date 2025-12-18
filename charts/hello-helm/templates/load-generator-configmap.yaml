@@ -1,0 +1,44 @@
+{{- if .Values.loadGenerator.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "hello-helm.fullname" . }}-load-generator-config
+  labels:
+    {{- include "hello-helm.labels" . | nindent 4 }}
+    app.kubernetes.io/component: load-generator
+data:
+  load-gen-config.sh: |
+    #!/bin/sh
+    
+    # Load generator configuration
+    export RPS={{ .Values.loadGenerator.config.rps }}
+    export CONCURRENCY={{ .Values.loadGenerator.config.concurrency }}
+    export METHOD="{{ .Values.loadGenerator.config.method }}"
+    export TIMEOUT_SECONDS={{ .Values.loadGenerator.config.timeout | trimSuffix "s" }}
+    export DELAY="{{ .Values.loadGenerator.config.delay }}"
+    
+    # Parse duration (convert to seconds)
+    duration="{{ .Values.loadGenerator.config.duration }}"
+    if [ "$duration" = "0" ] || [ "$duration" = "0s" ]; then
+      export DURATION_SECONDS=0
+    else
+      # Simple parsing for common time units
+      case "$duration" in
+        *s) export DURATION_SECONDS=${duration%s} ;;
+        *m) export DURATION_SECONDS=$((${duration%m} * 60)) ;;
+        *h) export DURATION_SECONDS=$((${duration%h} * 3600)) ;;
+        *) export DURATION_SECONDS=$duration ;;
+      esac
+    fi
+    
+    # Endpoints to test
+    export ENDPOINTS="{{ join " " .Values.loadGenerator.config.endpoints }}"
+    
+    echo "Configuration loaded:"
+    echo "  RPS: $RPS"
+    echo "  Concurrency: $CONCURRENCY" 
+    echo "  Method: $METHOD"
+    echo "  Timeout: ${TIMEOUT_SECONDS}s"
+    echo "  Duration: ${DURATION_SECONDS}s"
+    echo "  Endpoints: $ENDPOINTS"
+{{- end }}

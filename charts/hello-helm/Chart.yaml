@@ -1,12 +1,12 @@
 apiVersion: v2
 name: hello-helm
-description: A Helm chart for deploying multi-framework REST API applications (Go/Gin, Java/SpringBoot, Node.js/Express, Python/FastAPI, PHP/Laravel)
+description: A Helm chart for deploying multi-framework REST API applications with configurable load generation (Go/Gin, Java/SpringBoot, Node.js/Express, Python/FastAPI, PHP/Laravel)
 
 # Chart type: application
 type: application
 
 # Chart version (SemVer 2.0)
-version: 0.1.2
+version: 0.1.3
 
 # Application version (version of the applications being deployed)
 appVersion: "1.0.0"
@@ -16,6 +16,8 @@ keywords:
   - api
   - rest
   - microservices
+  - load-testing
+  - performance
   - go
   - java
   - nodejs

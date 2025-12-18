@@ -31,3 +31,7 @@ pythonFastapi:
 
 phpLaravel:
   enabled: false
+
+# Load generator disabled for basic setup
+loadGenerator:
+  enabled: false

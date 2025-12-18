@@ -1,0 +1,141 @@
+{{- if .Values.loadGenerator.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "hello-helm.fullname" . }}-load-generator
+  labels:
+    {{- include "hello-helm.labels" . | nindent 4 }}
+    app.kubernetes.io/component: load-generator
+spec:
+  replicas: {{ .Values.loadGenerator.replicas }}
+  selector:
+    matchLabels:
+      {{- include "hello-helm.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: load-generator
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/load-generator-configmap.yaml") . | sha256sum }}
+        {{- with .Values.loadGenerator.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      labels:
+        {{- include "hello-helm.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: load-generator
+    spec:
+      restartPolicy: {{ .Values.loadGenerator.restartPolicy }}
+      {{- with .Values.loadGenerator.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.loadGenerator.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.loadGenerator.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+      - name: load-generator
+        image: "{{ .Values.loadGenerator.image.repository }}:{{ .Values.loadGenerator.image.tag }}"
+        imagePullPolicy: {{ .Values.loadGenerator.image.pullPolicy }}
+        command: ["/bin/sh"]
+        args:
+          - "-c"
+          - |
+            echo "Starting load generator..."
+            
+            # Load configuration from configmap
+            source /config/load-gen-config.sh
+            
+            # Function to generate load for a target
+            generate_load() {
+              local service_name="$1"
+              local endpoint="$2"
+              local service_url="http://${service_name}.{{ .Release.Namespace }}.svc.cluster.local"
+              
+              echo "Generating load for ${service_url}${endpoint}"
+              
+              local count=0
+              local max_requests=$((RPS * DURATION_SECONDS))
+              local sleep_time=$(echo "scale=3; 1/$RPS" | bc -l)
+              
+              while [ $count -lt $max_requests ] || [ "$DURATION_SECONDS" -eq 0 ]; do
+                for i in $(seq 1 $CONCURRENCY); do
+                  (
+                    curl -s -m $TIMEOUT_SECONDS \
+                      -X $METHOD \
+                      -w "Status: %{http_code}, Time: %{time_total}s, URL: ${service_url}${endpoint}\n" \
+                      -o /dev/null \
+                      "${service_url}${endpoint}" || echo "Failed to reach ${service_url}${endpoint}"
+                  ) &
+                done
+                wait
+                count=$((count + CONCURRENCY))
+                sleep $sleep_time
+                
+                # Break if duration is set and reached
+                if [ "$DURATION_SECONDS" -gt 0 ] && [ $count -ge $max_requests ]; then
+                  break
+                fi
+              done
+            }
+            
+            # Install bc for calculations
+            apk add --no-cache bc
+            
+            # Get list of enabled services
+            services=""
+            {{- if .Values.goGin.enabled }}
+            services="$services {{ include "hello-helm.fullname" . }}-go-gin"
+            {{- end }}
+            {{- if .Values.javaSpringboot.enabled }}
+            services="$services {{ include "hello-helm.fullname" . }}-java-springboot"
+            {{- end }}
+            {{- if .Values.nodejsExpress.enabled }}
+            services="$services {{ include "hello-helm.fullname" . }}-nodejs-express"
+            {{- end }}
+            {{- if .Values.pythonFastapi.enabled }}
+            services="$services {{ include "hello-helm.fullname" . }}-python-fastapi"
+            {{- end }}
+            {{- if .Values.phpLaravel.enabled }}
+            services="$services {{ include "hello-helm.fullname" . }}-php-laravel"
+            {{- end }}
+            
+            # Use custom targets if specified
+            {{- if .Values.loadGenerator.targets }}
+            services="{{ join " " .Values.loadGenerator.targets }}"
+            {{- end }}
+            
+            echo "Targeting services: $services"
+            echo "Endpoints: $ENDPOINTS"
+            echo "RPS: $RPS, Concurrency: $CONCURRENCY, Duration: ${DURATION_SECONDS}s"
+            
+            # Generate load for each service and endpoint combination
+            for service in $services; do
+              for endpoint in $ENDPOINTS; do
+                echo "Starting load generation for $service$endpoint"
+                generate_load "$service" "$endpoint" &
+              done
+            done
+            
+            # Wait for all background jobs
+            wait
+            echo "Load generation completed"
+            
+            # Keep running if duration is 0 (infinite)
+            if [ "$DURATION_SECONDS" -eq 0 ]; then
+              echo "Running indefinitely... (CTRL+C to stop)"
+              tail -f /dev/null
+            fi
+        resources:
+          {{- toYaml .Values.loadGenerator.resources | nindent 10 }}
+        volumeMounts:
+        - name: config
+          mountPath: /config
+      volumes:
+      - name: config
+        configMap:
+          name: {{ include "hello-helm.fullname" . }}-load-generator-config
+{{- end }}

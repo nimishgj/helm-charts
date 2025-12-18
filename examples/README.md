@@ -10,6 +10,8 @@ examples/
 │   ├── basic/                 # Basic deployment examples
 │   ├── production/           # Production-ready configurations
 │   ├── multi-framework/      # Multiple frameworks enabled
+│   ├── load-testing/         # Load testing configurations
+│   ├── high-load/           # High load stress testing
 │   └── custom-values/        # Custom value file examples
 └── README.md
 ```
