@@ -1,0 +1,35 @@
+{{- range $instance := .Values.instances }}
+{{- $ctx := dict "root" $ "instance" $instance }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "aws-radar.instanceName" $ctx }}
+  labels:
+    {{- include "aws-radar.labels" $ctx | nindent 4 }}
+data:
+  config.yaml: |
+    server:
+      port: {{ $.Values.common.server.port }}
+      metrics_path: {{ $.Values.common.server.metricsPath }}
+      health_path: {{ $.Values.common.server.healthPath }}
+
+    collection:
+      interval: {{ dig "collection" "interval" $.Values.common.collection.interval $instance }}
+      timeout: {{ dig "collection" "timeout" $.Values.common.collection.timeout $instance }}
+
+    aws:
+      regions:
+        {{- toYaml $instance.aws.regions | nindent 8 }}
+
+    collectors:
+      {{- if $instance.collectors }}
+        {{- toYaml $instance.collectors | nindent 6 }}
+      {{- else }}
+        {{- toYaml $.Values.common.collectors | nindent 6 }}
+      {{- end }}
+
+    logging:
+      level: {{ dig "logging" "level" $.Values.common.logging.level $instance }}
+      format: {{ dig "logging" "format" $.Values.common.logging.format $instance }}
+{{- end }}

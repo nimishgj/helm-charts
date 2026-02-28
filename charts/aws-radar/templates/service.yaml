@@ -1,0 +1,19 @@
+{{- range $instance := .Values.instances }}
+{{- $ctx := dict "root" $ "instance" $instance }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "aws-radar.instanceName" $ctx }}
+  labels:
+    {{- include "aws-radar.labels" $ctx | nindent 4 }}
+spec:
+  type: {{ dig "service" "type" $.Values.common.service.type $instance }}
+  ports:
+    - port: {{ dig "service" "port" $.Values.common.service.port $instance }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "aws-radar.selectorLabels" $ctx | nindent 4 }}
+{{- end }}

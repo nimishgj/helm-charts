@@ -1,0 +1,78 @@
+{{- range $instance := .Values.instances }}
+{{- $ctx := dict "root" $ "instance" $instance }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "aws-radar.instanceName" $ctx }}
+  labels:
+    {{- include "aws-radar.labels" $ctx | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "aws-radar.selectorLabels" $ctx | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") $ | sha256sum }}
+        checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") $ | sha256sum }}
+        {{- with ($instance.podAnnotations | default $.Values.common.podAnnotations) }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      labels:
+        {{- include "aws-radar.selectorLabels" $ctx | nindent 8 }}
+    spec:
+      containers:
+        - name: aws-radar
+          image: "{{ $.Values.image.repository }}:{{ $.Values.image.tag }}"
+          imagePullPolicy: {{ $.Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ $.Values.common.server.port }}
+              protocol: TCP
+          envFrom:
+            - secretRef:
+                name: {{ include "aws-radar.instanceName" $ctx }}
+          volumeMounts:
+            - name: config
+              mountPath: /app/config.yaml
+              subPath: config.yaml
+              readOnly: true
+          livenessProbe:
+            httpGet:
+              path: {{ $.Values.common.server.healthPath }}
+              port: http
+            initialDelaySeconds: {{ dig "healthCheck" "initialDelaySeconds" $.Values.common.healthCheck.initialDelaySeconds $instance }}
+            periodSeconds: {{ dig "healthCheck" "periodSeconds" $.Values.common.healthCheck.periodSeconds $instance }}
+            timeoutSeconds: {{ dig "healthCheck" "timeoutSeconds" $.Values.common.healthCheck.timeoutSeconds $instance }}
+          readinessProbe:
+            httpGet:
+              path: {{ $.Values.common.server.healthPath }}
+              port: http
+            initialDelaySeconds: {{ dig "healthCheck" "initialDelaySeconds" $.Values.common.healthCheck.initialDelaySeconds $instance }}
+            periodSeconds: {{ dig "healthCheck" "periodSeconds" $.Values.common.healthCheck.periodSeconds $instance }}
+            timeoutSeconds: {{ dig "healthCheck" "timeoutSeconds" $.Values.common.healthCheck.timeoutSeconds $instance }}
+          resources:
+            {{- if $instance.resources }}
+            {{- toYaml $instance.resources | nindent 12 }}
+            {{- else }}
+            {{- toYaml $.Values.common.resources | nindent 12 }}
+            {{- end }}
+      volumes:
+        - name: config
+          configMap:
+            name: {{ include "aws-radar.instanceName" $ctx }}
+      {{- with ($instance.nodeSelector | default $.Values.common.nodeSelector) }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with ($instance.affinity | default $.Values.common.affinity) }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with ($instance.tolerations | default $.Values.common.tolerations) }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}

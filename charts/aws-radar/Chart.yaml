@@ -1,0 +1,28 @@
+apiVersion: v2
+name: aws-radar
+description: A Helm chart for deploying AWS Radar - a lightweight AWS resource monitoring agent that collects resource counts and exposes Prometheus metrics
+
+type: application
+
+version: 0.1.0
+
+appVersion: "0.1.1"
+
+keywords:
+  - aws
+  - monitoring
+  - prometheus
+  - metrics
+  - cloud
+  - infrastructure
+
+maintainers:
+  - name: nimishgj
+    email: nimishgj444@gmail.com
+
+home: https://github.com/nimishgj/aws-radar
+
+sources:
+  - https://github.com/nimishgj/aws-radar
+
+kubeVersion: ">=1.19.0-0"
