@@ -33,6 +33,7 @@ helm install aws-radar ./charts/aws-radar -f my-values.yaml
 # my-values.yaml
 instances:
   - name: prod
+    awsAccountName: Production
     awsAccessKeyId: AKIA...
     awsSecretAccessKey: ...
     aws:
@@ -41,6 +42,7 @@ instances:
         - eu-west-1
 
   - name: dev
+    awsAccountName: Development
     awsAccessKeyId: AKIA...
     awsSecretAccessKey: ...
     aws:
@@ -70,6 +72,10 @@ common:
   collection:
     interval: 60s              # How often to collect metrics
     timeout: 30s               # Timeout per collector
+
+  costExplorer:
+    enabled: false
+    frequency: daily           # hourly | daily | weekly | monthly
 
   collectors:                  # AWS services to monitor
     - ec2
@@ -107,11 +113,12 @@ common:
 
 ### Instance Configuration
 
-Each instance requires `name`, `awsAccessKeyId`, `awsSecretAccessKey`, and `aws.regions`. All other fields fall back to `common` defaults.
+Each instance requires `name`, `awsAccessKeyId`, `awsSecretAccessKey`, and `aws.regions`. `awsAccountName` is optional and sets a friendly `account_name` label in metrics via `AWS_RADAR_ACCOUNT_NAME`. All other fields fall back to `common` defaults.
 
 ```yaml
 instances:
   - name: production           # Used in resource names
+    awsAccountName: Production # Optional metric label override
     awsAccessKeyId: ""         # AWS credentials
     awsSecretAccessKey: ""
     aws:
@@ -123,6 +130,9 @@ instances:
     # collection:
     #   interval: 120s
     #   timeout: 45s
+    # costExplorer:
+    #   enabled: true
+    #   frequency: hourly
     # logging:
     #   level: debug
     # resources:
@@ -144,7 +154,7 @@ instances:
 ```yaml
 image:
   repository: ghcr.io/nimishgj/aws-radar
-  tag: "0.1.1"
+  tag: "0.2.0"
   pullPolicy: IfNotPresent
 ```
 
@@ -207,7 +217,7 @@ kubectl describe pod -l app.kubernetes.io/component=production
 
 | | |
 |---|---|
-| Chart Version | 0.1.0 |
-| App Version | 0.1.1 |
+| Chart Version | 0.2.0 |
+| App Version | 0.2.0 |
 | Kubernetes | >= 1.19.0 |
 | Source Code | [github.com/nimishgj/aws-radar](https://github.com/nimishgj/aws-radar) |

@@ -18,6 +18,10 @@ data:
       interval: {{ dig "collection" "interval" $.Values.common.collection.interval $instance }}
       timeout: {{ dig "collection" "timeout" $.Values.common.collection.timeout $instance }}
 
+    cost_explorer:
+      enabled: {{ dig "costExplorer" "enabled" $.Values.common.costExplorer.enabled $instance }}
+      frequency: {{ dig "costExplorer" "frequency" $.Values.common.costExplorer.frequency $instance }}
+
     aws:
       regions:
         {{- toYaml $instance.aws.regions | nindent 8 }}

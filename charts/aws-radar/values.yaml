@@ -1,6 +1,6 @@
 image:
   repository: ghcr.io/nimishgj/aws-radar
-  tag: "0.1.1"
+  tag: "0.2.0"
   pullPolicy: IfNotPresent
 
 common:
@@ -12,6 +12,10 @@ common:
   collection:
     interval: 60s
     timeout: 30s
+
+  costExplorer:
+    enabled: false
+    frequency: daily # hourly | daily | weekly | monthly
 
   collectors:
     - apigateway
@@ -74,6 +78,7 @@ common:
 # Instance-level fields override common defaults.
 instances:
   - name: default
+    awsAccountName: ""
     awsAccessKeyId: ""
     awsSecretAccessKey: ""
     aws:
@@ -83,6 +88,9 @@ instances:
     # collectors: [ec2, s3, lambda]
     # collection:
     #   interval: 120s
+    # costExplorer:
+    #   enabled: true
+    #   frequency: hourly
     # resources:
     #   limits:
     #     memory: "512Mi"
