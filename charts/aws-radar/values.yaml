@@ -1,6 +1,6 @@
 image:
   repository: ghcr.io/nimishgj/aws-radar
-  tag: "0.2.0"
+  tag: "0.3.0"
   pullPolicy: IfNotPresent
 
 common:
@@ -22,11 +22,39 @@ common:
     - apigatewayv2
     - autoscaling
     - athena
+    - configservice
+    - mq
+    - ses
+    - cloudformation
+    - documentdb
+    - neptune
+    - memorydb
+    - timestream
+    - fsx
+    - backup
+    - kinesis
+    - firehose
+    - kinesisanalytics
+    - emr
+    - elasticbeanstalk
+    - kms
+    - cloudtrail
+    - kinesisvideo
+    - opensearchserverless
+    - s3control
+    - batch
+    - codebuild
+    - codepipeline
+    - codedeploy
     - ecr
     - ec2
     - efs
     - eventbridge
     - glue
+    - apprunner
+    - transfer
+    - msk
+    - redshift
     - s3
     - rds
     - lambda
@@ -36,6 +64,11 @@ common:
     - dynamodb
     - elasticache
     - opensearch
+    - guardduty
+    - securityhub
+    - inspector2
+    - macie
+    - waf
     - secretsmanager
     - sfn
     - ssm
@@ -46,7 +79,29 @@ common:
     - acm
     - cloudfront
     - route53
+    - route53resolver
     - iam
+    - shield
+    - ecrpublic
+    - directconnect
+    - organizations
+    - controltower
+    - bedrock
+    - sagemaker
+    - quicksight
+    - workspaces
+    - appstream
+    - connect
+    - amplify
+    - globalaccelerator
+    - datasync
+    - dms
+    - cognito
+    - networkfirewall
+    - fms
+    - acmpca
+    - servicecatalog
+    - licensemanager
 
   logging:
     level: info
