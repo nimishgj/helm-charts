@@ -1,6 +1,6 @@
 image:
   repository: ghcr.io/nimishgj/aws-radar
-  tag: "0.3.0"
+  tag: "0.4.0"
   pullPolicy: IfNotPresent
 
 common:
@@ -16,6 +16,16 @@ common:
   costExplorer:
     enabled: false
     frequency: daily # hourly | daily | weekly | monthly
+
+  costCUR:
+    enabled: false
+    bucket: ""
+    prefix: ""
+    reportName: ""
+    format: ""           # auto-detect from manifest; "parquet" or "csv"
+    frequency: daily     # hourly | daily
+    region: us-east-1
+    maxResources: 100
 
   collectors:
     - apigateway

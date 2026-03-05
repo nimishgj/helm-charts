@@ -22,6 +22,16 @@ data:
       enabled: {{ dig "costExplorer" "enabled" $.Values.common.costExplorer.enabled $instance }}
       frequency: {{ dig "costExplorer" "frequency" $.Values.common.costExplorer.frequency $instance }}
 
+    cost_cur:
+      enabled: {{ dig "costCUR" "enabled" $.Values.common.costCUR.enabled $instance }}
+      bucket: {{ dig "costCUR" "bucket" $.Values.common.costCUR.bucket $instance }}
+      prefix: {{ dig "costCUR" "prefix" $.Values.common.costCUR.prefix $instance }}
+      report_name: {{ dig "costCUR" "reportName" $.Values.common.costCUR.reportName $instance }}
+      format: {{ dig "costCUR" "format" $.Values.common.costCUR.format $instance }}
+      frequency: {{ dig "costCUR" "frequency" $.Values.common.costCUR.frequency $instance }}
+      region: {{ dig "costCUR" "region" $.Values.common.costCUR.region $instance }}
+      max_resources: {{ dig "costCUR" "maxResources" $.Values.common.costCUR.maxResources $instance }}
+
     aws:
       regions:
         {{- toYaml $instance.aws.regions | nindent 8 }}
