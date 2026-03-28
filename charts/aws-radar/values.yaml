@@ -1,6 +1,6 @@
 image:
   repository: ghcr.io/nimishgj/aws-radar
-  tag: "0.4.0"
+  tag: "0.4.1"
   pullPolicy: IfNotPresent
 
 common:
