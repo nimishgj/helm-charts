@@ -144,8 +144,17 @@ common:
 instances:
   - name: default
     awsAccountName: ""
+    # ----- Quick-start path (chart creates Secret) -----
     awsAccessKeyId: ""
     awsSecretAccessKey: ""
+    # ----- ESO / external-secret path -----
+    # If secretName is set, chart skips its own Secret and the deployment
+    # reads creds from this Secret via secretKeyRef using the keys below.
+    secrets:
+      awsCredentials:
+        secretName: ""
+        secretKeyAccessKeyId: "AWS_ACCESS_KEY_ID"
+        secretKeySecretAccessKey: "AWS_SECRET_ACCESS_KEY"
     aws:
       regions:
         - us-east-1

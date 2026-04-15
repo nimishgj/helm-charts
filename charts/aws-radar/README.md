@@ -149,6 +149,22 @@ instances:
     # affinity: {}
 ```
 
+### Using an externally-managed Secret (ESO)
+
+If you manage the AWS credentials Secret externally (e.g. via External Secrets Operator), set `secrets.awsCredentials.secretName` instead of `awsAccessKeyId` / `awsSecretAccessKey`. The chart will skip creating its own Secret.
+
+```yaml
+instances:
+  - name: prod
+    awsAccountName: Production
+    secrets:
+      awsCredentials:
+        secretName: aws-radar-credentials  # an existing k8s Secret
+    aws:
+      regions:
+        - us-east-1
+```
+
 ### Image Configuration
 
 ```yaml

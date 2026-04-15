@@ -16,7 +16,9 @@ spec:
     metadata:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") $ | sha256sum }}
+        {{- if not (and $instance.secrets $instance.secrets.awsCredentials $instance.secrets.awsCredentials.secretName) }}
         checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") $ | sha256sum }}
+        {{- end }}
         {{- with ($instance.podAnnotations | default $.Values.common.podAnnotations) }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
@@ -31,9 +33,32 @@ spec:
             - name: http
               containerPort: {{ $.Values.common.server.port }}
               protocol: TCP
+          {{- if and $instance.secrets $instance.secrets.awsCredentials $instance.secrets.awsCredentials.secretName }}
+          env:
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $instance.secrets.awsCredentials.secretName }}
+                  key: {{ $instance.secrets.awsCredentials.secretKeyAccessKeyId | default "AWS_ACCESS_KEY_ID" }}
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $instance.secrets.awsCredentials.secretName }}
+                  key: {{ $instance.secrets.awsCredentials.secretKeySecretAccessKey | default "AWS_SECRET_ACCESS_KEY" }}
+            {{- if $instance.awsAccountName }}
+            - name: AWS_RADAR_ACCOUNT_NAME
+              value: {{ $instance.awsAccountName | quote }}
+            {{- end }}
+          {{- else }}
           envFrom:
             - secretRef:
                 name: {{ include "aws-radar.instanceName" $ctx }}
+          {{- if $instance.awsAccountName }}
+          env:
+            - name: AWS_RADAR_ACCOUNT_NAME
+              value: {{ $instance.awsAccountName | quote }}
+          {{- end }}
+          {{- end }}
           volumeMounts:
             - name: config
               mountPath: /app/config.yaml
