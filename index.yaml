@@ -2,6 +2,31 @@ apiVersion: v1
 entries:
   aws-radar:
   - apiVersion: v2
+    appVersion: 0.4.2
+    created: "2026-04-20T07:09:27.984684079Z"
+    description: A Helm chart for deploying AWS Radar - a lightweight AWS resource
+      monitoring agent that collects resource counts and exposes Prometheus metrics
+    digest: 85b58a4abc3bfef7e61829840c3bb401e9a24a6f8da0a2907d807ca0842c0c7c
+    home: https://github.com/nimishgj/aws-radar
+    keywords:
+    - aws
+    - monitoring
+    - prometheus
+    - metrics
+    - cloud
+    - infrastructure
+    kubeVersion: '>=1.19.0-0'
+    maintainers:
+    - email: nimishgj444@gmail.com
+      name: nimishgj
+    name: aws-radar
+    sources:
+    - https://github.com/nimishgj/aws-radar
+    type: application
+    urls:
+    - https://github.com/nimishgj/helm-charts/releases/download/aws-radar-0.5.1/aws-radar-0.5.1.tgz
+    version: 0.5.1
+  - apiVersion: v2
     appVersion: 0.4.1
     created: "2026-04-15T11:30:36.728345621Z"
     description: A Helm chart for deploying AWS Radar - a lightweight AWS resource
@@ -216,4 +241,4 @@ entries:
     urls:
     - https://github.com/nimishgj/helm-charts/releases/download/hello-helm-0.1.1/hello-helm-0.1.1.tgz
     version: 0.1.1
-generated: "2026-04-15T11:30:36.728370889Z"
+generated: "2026-04-20T07:09:27.98471671Z"
