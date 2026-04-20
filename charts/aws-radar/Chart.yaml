@@ -4,9 +4,9 @@ description: A Helm chart for deploying AWS Radar - a lightweight AWS resource m
 
 type: application
 
-version: 0.5.0
+version: 0.5.1
 
-appVersion: "0.4.1"
+appVersion: "0.4.2"
 
 keywords:
   - aws
