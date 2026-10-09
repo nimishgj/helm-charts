@@ -24,6 +24,7 @@ data:
 
     cost_cur:
       enabled: {{ dig "costCUR" "enabled" $.Values.common.costCUR.enabled $instance }}
+      report_type: {{ dig "costCUR" "reportType" $.Values.common.costCUR.reportType $instance }}
       bucket: {{ dig "costCUR" "bucket" $.Values.common.costCUR.bucket $instance }}
       prefix: {{ dig "costCUR" "prefix" $.Values.common.costCUR.prefix $instance }}
       report_name: {{ dig "costCUR" "reportName" $.Values.common.costCUR.reportName $instance }}
