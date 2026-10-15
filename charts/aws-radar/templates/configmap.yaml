@@ -32,6 +32,7 @@ data:
       frequency: {{ dig "costCUR" "frequency" $.Values.common.costCUR.frequency $instance }}
       region: {{ dig "costCUR" "region" $.Values.common.costCUR.region $instance }}
       max_resources: {{ dig "costCUR" "maxResources" $.Values.common.costCUR.maxResources $instance }}
+      resource_tags: {{ dig "costCUR" "resourceTags" $.Values.common.costCUR.resourceTags $instance }}
 
     aws:
       regions:

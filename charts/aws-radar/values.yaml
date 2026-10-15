@@ -1,6 +1,6 @@
 image:
   repository: ghcr.io/nimishgj/aws-radar
-  tag: "0.7.1"
+  tag: "0.7.2"
   pullPolicy: IfNotPresent
 
 common:
@@ -27,6 +27,7 @@ common:
     frequency: daily     # hourly | daily
     region: us-east-1
     maxResources: 100
+    resourceTags: false   # enrich top-N resources with all their tags (needs tag:GetResources IAM)
 
   collectors:
     - apigateway
